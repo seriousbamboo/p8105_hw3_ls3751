@@ -1,0 +1,12 @@
+---
+title: "p8105_hw3_ls3751"
+author: "Liucheng Shi"
+output: github_document
+---
+
+_packages required_
+```{r setup, message = F}
+library(tidyverse)
+library(p8105.datasets)
+```
+
