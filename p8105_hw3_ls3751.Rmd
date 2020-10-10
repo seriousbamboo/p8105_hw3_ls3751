@@ -89,7 +89,7 @@ instacart %>%
 
 ### Problem 2
 
-#### 1.1 load the dataset and tidy data
+#### 2.1.1 load the dataset and tidy data
 
 ```{r, message = F, warning = F}
 accel_df = 
@@ -103,7 +103,7 @@ accel_df =
   )
 ```
 
-#### 1.2 Create a variable that indicate the weekday/weekend status and modify variable formats
+#### 2.1.2 Create a variable that indicate the weekday/weekend status and modify variable formats
 
 ```{r}
 accel_df = accel_df %>% 
@@ -121,7 +121,7 @@ accel_df = accel_df %>%
   relocate(weekday_weekend, .before = minute)
 ```
 
-#### 1.3 Overview
+#### 2.1.3 Overview
 
 After data cleaning and wrangling, this dataset has `r nrow(accel_df)` observations with `r ncol(accel_df)` variables, including `r names(accel_df)`.  
 
@@ -131,7 +131,7 @@ After data cleaning and wrangling, this dataset has `r nrow(accel_df)` observati
 *   _minutes_: the recorded time  (1440 min a day). 
 *   _counts_: the count of activities measured by accelerometer. 
 
-#### 2. Traditional analyses of accelerometer
+#### 2.2 Traditional analyses of accelerometer
 
 ```{r}
 accel_df %>% 
@@ -165,25 +165,58 @@ accel_df %>%
 
 The table using ranks within the week is not easy to read neither.
 
-#### 3. Make a single-panel plot that shows the 24-hour activity time courses for each day
+#### 2.3 Make a single-panel plot that shows the 24-hour activity time courses for each day
 
+By hour:
 ```{r}
 accel_df %>% 
   group_by(week,day) %>%
-  mutate(hour = floor((minute-1)/60)) %>%
+  mutate(hour = floor((minute - 1)/60)) %>%
   ungroup() %>% 
-  group_by(week,day,hour) %>% 
-  summarise(activity_mean = mean(counts, na.rm = T)) %>% 
-  ggplot(aes(x = hour, y = activity_mean)) +
-  geom_point(aes(color = day), alpha = .5) +
-  geom_smooth()
+  group_by(day,hour) %>% 
+  summarise(mean_act = mean(counts, na.rm = T)) %>%
+  ggplot(aes(x = hour, y = mean_act, color = day)) +
+  geom_point(alpha = .5, size = 1.5) +
+  geom_smooth(se = F) +
+  labs(
+    title = "Average Hourly activity counts in 5 weeks",
+    x = "Time (hour)",
+    y = "Hourly activity counts",
+    caption = "From Advanced Cardiac Care Center of Columbia University Medical Center"
+  ) +
+  scale_y_continuous(breaks = c(seq(0, 1000, by = 100)),
+                     labels = c(seq(0, 1000, by = 100))) +
+  scale_x_continuous(breaks = c(seq(0,23, by = 2)),
+                     labels = c(seq(0,23, by = 2)),)
   
 ```
 
+By minute:
+
+```{r}
+accel_df %>% 
+  group_by(day,minute) %>% 
+  summarise(mean_act = mean(counts, na.rm = T)) %>%
+  ggplot(aes(x = minute, y = mean_act, color = day)) +
+  geom_point(alpha = .2, size = .5) +
+  geom_smooth(se = F) +
+  labs(
+    title = "Average Hourly activity counts in 5 weeks",
+    x = "Time (hour)",
+    y = "Hourly activity counts",
+    caption = "From Advanced Cardiac Care Center of Columbia University Medical Center"
+  ) +
+  scale_y_continuous(breaks = c(seq(0, 3000, by = 250)),
+                     labels = c(seq(0, 3000, by = 250))) +
+  scale_x_continuous(breaks = c(seq(0,1400, by = 120)),
+                     labels = c(seq(0,23, by = 2)),)
+```
+
+From the plots, it is obvious that the activity level of the patient began rising from 12 AM, peaked at noon/afternoon, and gradually decreased. We can also observe that the patient would reach the highest activity level at 11 AM on Sunday, which is much earlier and it decreased at a sharp slope. On Friday, however, the participant would not reach the peak until late in the evening. 
 
 ### Problem 3
 
-#### 1. Overview
+#### 3.1 Overview
 
 ```{r, message = F, collapse = T}
 library(lubridate)
@@ -212,7 +245,7 @@ ny_noaa %>%
 
 The missing values on tmin and tmax seems to be problematic (over 40%) compared with other variables (less than 6%).
 
-#### 2. Do some data cleaning. Create separate variables for year, month, and day. Ensure observations for temperature, precipitation, and snowfall are given in reasonable units.
+#### 3.2 Do some data cleaning. Create separate variables for year, month, and day. Ensure observations for temperature, precipitation, and snowfall are given in reasonable units.
 
 ```{r, collapse = T}
 ny_df <- ny_noaa %>% 
@@ -229,7 +262,7 @@ ny_df %>%
 
 The most common observed value for snowfall is 0 since we do not expect to have any snowfall during a long period of every year.
 
-#### 3. Make a two-panel plot showing the average max temperature in January and in July in each station across years.
+#### 3.3 Make a two-panel plot showing the average max temperature in January and in July in each station across years.
 
 ```{r, message = F}
 ny_jan_jul = ny_df %>% 
@@ -257,9 +290,9 @@ ny_jan_jul %>%
 The average max temperature in January distributed from -10 C to 10 C with few outliers(e.g.1982, 1994, 2005). It seems to be centered at 0 C.  
 The average max temperature in July has a smaller variation compared with January, ranging from 20 C to 35 C. It seems to be centered at 27.5 C. A few more outliers were detected (1984, 1988, 2004, 2007).
 
-#### 4. Make a two-panel plot
+#### 3.4 Make a two-panel plot
 
-##### 4.1 showing tmax vs tmin for the full dataset
+##### 3.4.1 showing tmax vs tmin for the full dataset
 
 ```{r}
 tmax_tmin = ny_df %>% 
@@ -273,11 +306,10 @@ tmax_tmin = ny_df %>%
     y = "Min temperature (C)",
     caption = "From NOAA") +
   theme(legend.text = element_text(size = 5))
-tmax_tmin
 ```
 
 
-##### 4.2 make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year
+##### 3.4.2 make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year
 
 ```{r}
 snow_plot = ny_df %>%
@@ -291,10 +323,9 @@ snow_plot = ny_df %>%
     subtitle = "1981-2010 New York state",
     x = "Snowfall (mm)",
     y = "Year")
-snow_plot
 ```
 
-##### 4.3 show two plots using patchwork
+##### 3.4.3 show two plots using patchwork
 
 ```{r, fig.width = 16, fig.height = 10, message = F}
 tmax_tmin + snow_plot
