@@ -123,7 +123,7 @@ accel_df = accel_df %>%
 
 #### 2.1.3 Overview
 
-After data cleaning and wrangling, this dataset has `r nrow(accel_df)` observations with `r ncol(accel_df)` variables, including `r names(accel_df)`.  
+After data cleaning and wrangling, this dataset has __`r nrow(accel_df)`__ observations with __`r ncol(accel_df)`__ variables, including _`r names(accel_df)`_.  
 
 *   _week_id_: the week indicator ranging from 1 to 5.
 *   _day_id_: the day indicator ranging from 1 to 35 (5 weeks in total).
@@ -133,7 +133,7 @@ After data cleaning and wrangling, this dataset has `r nrow(accel_df)` observati
 
 #### 2.2 Traditional analyses of accelerometer
 
-```{r}
+```{r, message = F}
 accel_df %>% 
   group_by(week, day) %>% 
   summarise(activity_sum = sum(counts, na.rm = T)) %>% 
@@ -149,7 +149,7 @@ Besides the extreme large activity counts on Sunday Week 1 and two extreme small
 
 Ranking with the sum of activity counts.
 
-```{r}
+```{r, message = F}
 accel_df %>% 
   group_by(week, day) %>% 
   summarise(activity_sum = sum(counts, na.rm = T)) %>% 
@@ -168,7 +168,7 @@ The table using ranks within the week is not easy to read neither.
 #### 2.3 Make a single-panel plot that shows the 24-hour activity time courses for each day
 
 By hour:
-```{r}
+```{r, message = F}
 accel_df %>% 
   group_by(week,day) %>%
   mutate(hour = floor((minute - 1)/60)) %>%
@@ -193,13 +193,13 @@ accel_df %>%
 
 By minute:
 
-```{r}
+```{r, message = F}
 accel_df %>% 
   group_by(day,minute) %>% 
   summarise(mean_act = mean(counts, na.rm = T)) %>%
   ggplot(aes(x = minute, y = mean_act, color = day)) +
-  geom_point(alpha = .2, size = .5) +
-  geom_smooth(se = F) +
+  geom_point(alpha = .15, size = .5) +
+  geom_smooth(size = .5, se = F) +
   labs(
     title = "Average Hourly activity counts in 5 weeks",
     x = "Time (hour)",
@@ -224,7 +224,7 @@ data("ny_noaa")
 range(pull(ny_noaa,date))
 ```
 
-This dataset has `r nrow(ny_noaa)` observations collected from `r ny_noaa %>% summarize(n_distinct(id))` weather stations with `r ncol(ny_noaa)` variables.
+This dataset has __`r nrow(ny_noaa)`__ observations collected from __`r ny_noaa %>% summarize(n_distinct(id))`__ distinct weather stations with __`r ncol(ny_noaa)`__ variables.
 
 *   _id_: the indicator of which site did the record.
 *   _date_: the recorded dat from 1981.1.1 to 2010.12.31. 
