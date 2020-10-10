@@ -8,6 +8,8 @@ _packages required_
 ```{r setup, message = F}
 library(tidyverse)
 library(p8105.datasets)
+library(ggridges)
+library(patchwork)
 
 knitr::opts_chunk$set(
   fig.width = 6,
@@ -255,7 +257,9 @@ ny_jan_jul %>%
 The average max temperature in January distributed from -10 C to 10 C with few outliers(e.g.1982, 1994, 2005). It seems to be centered at 0 C.  
 The average max temperature in July has a smaller variation compared with January, ranging from 20 C to 35 C. It seems to be centered at 27.5 C. A few more outliers were detected (1984, 1988, 2004, 2007).
 
-#### 4.1 Make a two-panel plot showing tmax vs tmin for the full dataset
+#### 4. Make a two-panel plot
+
+##### 4.1 showing tmax vs tmin for the full dataset
 
 ```{r}
 tmax_tmin = ny_df %>% 
@@ -271,7 +275,26 @@ tmax_tmin = ny_df %>%
   theme(legend.text = element_text(size = 5))
 ```
 
-```{r}
 
+##### 4.2 make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year
+
+```{r}
+snow_plot = ny_df %>%
+  select(year, snow) %>% 
+  filter(snow > 0 & snow < 100) %>% 
+  mutate(year = factor(year)) %>% 
+  ggplot(aes(x = snow, y = year)) + 
+  geom_density_ridges(color = "red", fill = "green") + 
+  labs(
+    title = "Distribution of snowfall by year",
+    subtitle = "1981-2010 New York state",
+    x = "Snowfall (mm)",
+    y = "Year") 
+```
+
+##### 4.3 show two plots using patchwork
+
+```{r, fig.width = 16, fig.height = 10}
+tmax_tmin + snow_plot
 ```
 
