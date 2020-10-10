@@ -185,7 +185,7 @@ accel_df %>%
 
 #### 1. Overview
 
-```{r, message = F}
+```{r, message = F, collapse = T}
 library(lubridate)
 data("ny_noaa")
 range(pull(ny_noaa,date))
@@ -214,7 +214,7 @@ The missing values on tmin and tmax seems to be problematic (over 40%) compared 
 
 #### 2. Do some data cleaning. Create separate variables for year, month, and day. Ensure observations for temperature, precipitation, and snowfall are given in reasonable units.
 
-```{r}
+```{r, collapse = T}
 ny_df <- ny_noaa %>% 
   mutate(year = year(date),
          month = month(date), 
@@ -273,6 +273,7 @@ tmax_tmin = ny_df %>%
     y = "Min temperature (C)",
     caption = "From NOAA") +
   theme(legend.text = element_text(size = 5))
+tmax_tmin
 ```
 
 
@@ -289,12 +290,13 @@ snow_plot = ny_df %>%
     title = "Distribution of snowfall by year",
     subtitle = "1981-2010 New York state",
     x = "Snowfall (mm)",
-    y = "Year") 
+    y = "Year")
+snow_plot
 ```
 
 ##### 4.3 show two plots using patchwork
 
-```{r, fig.width = 16, fig.height = 10}
+```{r, fig.width = 16, fig.height = 10, message = F}
 tmax_tmin + snow_plot
 ```
 
