@@ -168,7 +168,7 @@ The table using ranks within the week is not easy to read neither.
 #### 2.3 Make a single-panel plot that shows the 24-hour activity time courses for each day
 
 By hour:
-```{r, message = F}
+```{r average_activity_hour, message = F}
 accel_df %>% 
   group_by(week,day) %>%
   mutate(hour = floor((minute - 1)/60)) %>%
@@ -193,7 +193,7 @@ accel_df %>%
 
 By minute:
 
-```{r, message = F}
+```{r average_activity_minute, message = F}
 accel_df %>% 
   group_by(day,minute) %>% 
   summarise(mean_act = mean(counts, na.rm = T)) %>%
@@ -264,7 +264,7 @@ The most common observed value for snowfall is 0 since we do not expect to have 
 
 #### 3.3 Make a two-panel plot showing the average max temperature in January and in July in each station across years.
 
-```{r, message = F}
+```{r Jan_Jul_maxtemp, message = F}
 ny_jan_jul = ny_df %>% 
   filter(month %in% c(1, 7)) %>% 
   group_by(id, year, month) %>% 
@@ -327,7 +327,7 @@ snow_plot = ny_df %>%
 
 ##### 3.4.3 show two plots using patchwork
 
-```{r, fig.width = 16, fig.height = 10, message = F}
+```{r Q3_two_panel_plot, fig.width = 16, fig.height = 10, message = F}
 tmax_tmin + snow_plot
 ```
 
